@@ -30,8 +30,19 @@ export const apiSlice = createApi({
         method: "DELETE",
       }),
     }),
+    editUser: builder.mutation<User, Partial<User> & { id: string }>({
+      query: (user) => ({
+        url: `newexam/${user.id}`,
+        method: "PUT",
+        body: user,
+      }),
+    }),
   }),
 });
 
-export const { useGetUsersQuery, useAddUserMutation, useDeleteUserMutation } =
-  apiSlice;
+export const {
+  useGetUsersQuery,
+  useAddUserMutation,
+  useDeleteUserMutation,
+  useEditUserMutation,
+} = apiSlice;
