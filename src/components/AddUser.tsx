@@ -31,6 +31,8 @@ const AddUser = ({ userToEdit, onClose }: AddUserProps) => {
     lastname: "",
     description: "",
   });
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   React.useEffect(() => {
     if (userToEdit) {
@@ -40,6 +42,7 @@ const AddUser = ({ userToEdit, onClose }: AddUserProps) => {
         lastname: userToEdit.lastname,
         description: userToEdit.description,
       });
+      setImagePreview(userToEdit.avatar);
     }
   }, [userToEdit]);
 
@@ -48,6 +51,23 @@ const AddUser = ({ userToEdit, onClose }: AddUserProps) => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({
+          ...prev,
+          avatar: reader.result as string,
+        }));
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -64,6 +84,8 @@ const AddUser = ({ userToEdit, onClose }: AddUserProps) => {
         lastname: "",
         description: "",
       });
+      setSelectedFile(null);
+      setImagePreview(null);
       onClose();
     } catch (err) {
       console.error("Failed to save the user: ", err);
@@ -76,12 +98,17 @@ const AddUser = ({ userToEdit, onClose }: AddUserProps) => {
         {userToEdit ? "Edit User" : "Add User"}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {imagePreview && (
+          <img
+            src={imagePreview}
+            alt="Preview"
+            className="w-32 h-32 object-cover rounded-full mb-4"
+          />
+        )}
         <input
-          type="text"
-          name="avatar"
-          value={formData.avatar}
-          onChange={handleChange}
-          placeholder="Avatar URL"
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
           className="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-black dark:text-white"
         />
         <input
