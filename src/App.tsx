@@ -2,15 +2,16 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import "./index.css";
-import AddItem from "./components/AddItem";
-import ListItem from "./components/ListItem";
+
+import AddUser from "./components/AddUser";
+import UsersList from "./components/UsersList";
 
 function App() {
   return (
-    <div className="App">
-      <AddItem />
-      <ListItem />
-    </div>
+    <>
+      <AddUser />
+      <UsersList />
+    </>
   );
 }
 
